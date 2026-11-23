@@ -1,0 +1,540 @@
+\documentclass[11pt]{amsart}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}[section]
+\theoremstyle{remark}
+\newtheorem{remark}[lemma]{Remark}
+
+\newcommand{\Hraw}{\mathcal{H}^{\mathrm{raw}}}
+\newcommand{\up}{\mathrm{up}}
+\newcommand{\peff}{p_{\mathrm{eff}}}
+\newcommand{\J}{\mathcal{J}}
+\newcommand{\ft}{\tilde f}
+\emergencystretch=2em
+
+\title{The $p$-biased Fourier entropy--influence inequality for symmetric Boolean functions}
+\author{Yitzchak Shmalo}
+\address{Einstein Institute of Mathematics, The Hebrew University of Jerusalem, Jerusalem, Israel}
+\email{yitzchak.shmalo@gmail.com}
+\date{}
+
+
+
+\begin{document}
+\begin{abstract}
+Let $\mu_p$ be the $p$-biased product measure on $\{0,1\}^n$. We prove that every non-constant symmetric Boolean function $f$ satisfies $H_{\mu_p}(f) < \bigl(\log_2\frac{1}{p(1-p)} + 4.25\bigr) I_{\mu_p}(f)$ for every $p \in (0,1)$ and every $n$, where $H_{\mu_p}$ is the Fourier entropy and $I_{\mu_p}$ the total influence with respect to $\mu_p$. The coefficient of $\log_2\frac{1}{p(1-p)}$ cannot be lowered, as the OR function shows when $p \to 0$, and after the level-by-level term $I_{\mu_p}(f)\log_2\frac{1}{4p(1-p)}$ is removed, the remaining entropy is less than $6.25\, I_{\mu_p}(f)$, and both its part on non-empty sets and the upward-cancellation functional $B^+_{\mu_p}(f)$ are less than $5.75\, I_{\mu_p}(f)$. The proof represents the Fourier weights through a single derivative, bounds the $p$-biased noise operator by a modified Bessel function and a weighted sum over the levels by a Poisson--Bessel bound, and certifies the constants by interval arithmetic.
+\end{abstract}
+\subjclass[2020]{06E30, 42C10, 94A17}
+\keywords{Fourier entropy-influence conjecture, biased product measure, symmetric Boolean functions, total influence}
+\maketitle
+
+\section{Introduction}
+
+For a Boolean function $f$ on the discrete cube, the Fourier entropy--influence (FEI) conjecture of Friedgut and Kalai~\cite{FK96} asserts that the entropy of the squared Fourier coefficients is at most a universal constant times the total influence. Under the uniform measure the conjecture is open in general; it is known for symmetric functions and read-once decision trees~\cite{OWZ11}, for read-once formulas over gates of bounded fan-in~\cite{OT13} and over AND, OR, XOR and NOT gates~\cite{CKLS16}, and for linear threshold functions~\cite{Shm26lt}. For general $f$, Kelman, Kindler, Lifshitz, Minzer and Safra~\cite{KKLMS20} prove the min-entropy form of the conjecture up to a factor $\log(1 + I(f)/\mathrm{Var} f)$, and bound $H(f)$ by a constant times $\sum_S |S|\log(|S|+1)\ft(S)^2 + I(f)$, where $\ft(S)$ are the Fourier coefficients of $f$. For symmetric functions O'Donnell, Wright and Zhou~\cite{OWZ11} obtain the constant $12.04$, and the constant $4.650431$ is proved in~\cite{Shm26sym}.
+
+Keller, Mossel and Schlank~\cite{KMS12} formulated the conjecture for the $p$-biased measure $\mu_p$, with a factor of order $\log\frac{1}{p}$ in front of the influence, showed that this form follows from the uniform one~\cite[Prop.~2.1]{KMS12}, and showed with the clique property at its critical probability that the factor cannot be removed~\cite[Prop.~2.4]{KMS12}. The exact coefficient is seen on $\mathrm{OR}_n$: for fixed $p$ the ratio $H_{\mu_p}/I_{\mu_p}$ tends to $\log_2\frac{1}{p(1-p)} + \frac{2(1-p)}{p}\log_2\frac{1}{1-p}$ as $n \to \infty$, and the second term tends to $2/\ln 2$ as $p \to 0$ (Remark~\ref{rem:or}). The biased form of the conjecture therefore reads $H_{\mu_p}(f) \le (C_1 \log_2\frac{1}{p(1-p)} + C_2) I_{\mu_p}(f)$, and the question for a class of functions is which pairs $(C_1, C_2)$ it admits. We show that for symmetric functions one may take $C_1 = 1$, which is optimal, and $C_2 = 4.25$. At $p = \frac12$ this gives $H \le 6.25\, I$, which is weaker than the constant of~\cite{Shm26sym}; the point of Theorem~\ref{thm:B} is that the bound holds uniformly in $p$ with the sharp coefficient of $\log_2\frac{1}{p(1-p)}$.
+
+Theorem~\ref{thm:A} carries the structure used for symmetric functions under the uniform measure~\cite{Shm26sym} over to $\mu_p$. All Fourier weights of a symmetric function are determined by the level weights $\mu_m$ of the single derivative $D_1 f$; the generating function of these weights is controlled by the noise semigroup through a modified Bessel function; and the ratio $v$ of variance to influence is at most $e^{-M}(I_0(M) + I_1(M))$, where $M = (n-1)p(1-p)$. In the identity \eqref{eq:A1} the term $\log_2\frac{1}{p(1-p)}$ appears with coefficient exactly one, so the sharp coefficient in Theorem~\ref{thm:B} comes at no cost, and what must be bounded uniformly in $p$ and $n$ is the remainder.
+
+For $p \ne \frac12$ the binomial law $\pi_p$ is skewed and for small $p$ its mass concentrates near $0$, far from the middle level. Two lemmas deal with this. A tilting lemma (Lemma~\ref{lem:tilt}) compares the weights $\mu_m$ with a binomial law whose parameter is free; optimising the parameter (Lemma~\ref{lem:opt}) bounds the entropy in terms of $v$ and a lower bound for $\pi_p(\J)$ alone. A dichotomy lemma (Lemma~\ref{lem:dich}) shows that either $f$ has a jump at the mode $\lfloor np \rfloor$, or $v$ is at most the reciprocal of the distance from $np$ to a jump $k$. The proof of Theorem~\ref{thm:B} then splits into five regimes according to the position of $k$: at $0$, at $n - 1$, far below the mean $(n-1)p$, far above it, and between one half and three halves of it. In the first four the bound is a closed expression in one variable. In the last a Poisson--Bessel bound (Lemma~\ref{lem:poi}) is needed, and the constants are certified by interval arithmetic (Appendix~\ref{app:cert}).
+
+Section~\ref{sec:results} states the two theorems. Theorem~\ref{thm:A} is proved in Section~\ref{sec:A}, which also treats the OR function (Remark~\ref{rem:or}), and Theorem~\ref{thm:B} is proved in Section~\ref{sec:B}. The table lists what each result uses.
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+result & uses & proved in \\
+\midrule
+Theorem~\ref{thm:A} & Lemma~\ref{lem:unimodal} & Section~\ref{sec:A} \\
+Lemma~\ref{lem:tilt} & Theorem~\ref{thm:A}(1) & Section~\ref{ssec:lemmas} \\
+Lemma~\ref{lem:opt} & Lemma~\ref{lem:tilt} & Section~\ref{ssec:lemmas} \\
+Lemma~\ref{lem:dich} & binomial tails & Section~\ref{ssec:lemmas} \\
+Lemma~\ref{lem:poi} & Theorem~\ref{thm:A}(4), Lemma~\ref{lem:tilt} & Section~\ref{ssec:lemmas} \\
+Lemmas~\ref{lem:left}, \ref{lem:right} & calculus & Section~\ref{ssec:est} \\
+Lemma~\ref{lem:central} & bounds in Stirling's formula~\cite{Rob55} & Section~\ref{ssec:est} \\
+Theorem~\ref{thm:B} & Theorem~\ref{thm:A}(3), Lemmas~\ref{lem:opt}--\ref{lem:central}, Appendix~\ref{app:cert} & Sections~\ref{ssec:regimes}, \ref{ssec:concl} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Notation}\label{ssec:notation}
+Throughout, $\log_2$ is the logarithm to base $2$ and $\ln$ the natural logarithm. Let $p \in (0,1)$, $q := 1 - p$, and let $\mu_p(x) = p^{|x|} q^{n-|x|}$ on $\{0,1\}^n$, where $|x| = \sum_i x_i$. The functions $\phi_S(x) := \prod_{i \in S} \frac{x_i - p}{\sqrt{pq}}$, $S \subseteq [n]$, form an orthonormal basis of $L^2(\mu_p)$, and every $f : \{0,1\}^n \to \{-1,1\}$ expands as $f = \sum_S \ft(S) \phi_S$ with $\sum_S \ft(S)^2 = 1$. We write
+\[
+H_{\mu_p}(f) := \sum_{S} \ft(S)^2 \log_2 \frac{1}{\ft(S)^2}, \qquad
+H^{\mathrm{nz}}_{\mu_p}(f) := \sum_{S \ne \emptyset} \ft(S)^2 \log_2 \frac{1}{\ft(S)^2},
+\]
+$W_s(f) := \sum_{|S| = s} \ft(S)^2$, $V_{\mu_p}(f) := 1 - \ft(\emptyset)^2$, $I_{\mu_p}(f) := \sum_{s} s W_s(f)$, and $H_0(V) := (1-V)\log_2\frac{1}{1-V}$, so that $H_{\mu_p} = H_0(V_{\mu_p}) + H^{\mathrm{nz}}_{\mu_p}$.
+Since $-u\ln u \le 1 - u$ for $u \in [0,1]$,
+\begin{equation}\label{eq:H0}
+H_0(V) \le \frac{V}{\ln 2} \qquad (0 \le V \le 1).
+\end{equation}
+ The raw non-empty entropy is
+\[
+\Hraw_{\mu_p}(f) := H^{\mathrm{nz}}_{\mu_p}(f) - I_{\mu_p}(f) \log_2 \frac{1}{4pq} .
+\]
+For $S \ne \emptyset$ let $\up(S) := \sum_{T \supseteq S} \ft(T)^2$, and put
+\[
+B^+_{\mu_p}(f) := \sum_{S \ne \emptyset} \ft(S)^2 \log_2 \frac{\up(S)}{\ft(S)^2}, \qquad B_{\mu_p}(f) := H_0(V_{\mu_p}(f)) + B^+_{\mu_p}(f).
+\]
+For $\rho \in [0,1]$ the noise operator $T_\rho$ on $L^2(\mu_p)$ is defined by $T_\rho \phi_S = \rho^{|S|} \phi_S$. Equivalently $T_\rho h(z) = \mathbb{E}\, h(x)$, where independently for each $i$ the bit $x_i$ equals $z_i$ with probability $\rho$ and is drawn afresh from $\mu_p$ on $\{0,1\}$ otherwise. $T_\rho$ is self-adjoint and $T_\rho T_{\rho'} = T_{\rho\rho'}$. A term whose weight vanishes ($\ft(S) = 0$, or $\mu_m = 0$ below) contributes $0$ to an entropy sum.
+
+A function $f$ is symmetric if $f(x) = g(|x|)$ for some $g : \{0, \dots, n\} \to \{-1,1\}$. Its jump set is $\J := \{ r \in [n] : g(r-1) \ne g(r) \}$. For $n \ge 2$ put $N := n-1$, $M := Npq$, and $\pi_p(k) := \binom{N}{k} p^k q^{N-k}$.
+
+\section{Main results}\label{sec:results}
+
+\begin{theorem}\label{thm:A}
+Let $n \ge 2$ and let $f$ be a non-constant symmetric Boolean function with jump set $\J$. Put $\pi_p(\J) := \sum_{r \in \J} \pi_p(r-1)$, $\peff := 4pq\, \pi_p(\J)$, and let $D_1 f(x') := \sqrt{pq}\,(f(1,x') - f(0,x'))$ for $x' \in \{0,1\}^N$. Define $\mu_m := W_m(D_1 f)/\peff$ for $0 \le m \le N$.
+\begin{enumerate}
+\item $I_{\mu_p}(f) = n \peff$, $\sum_{m=0}^N \mu_m = 1$, $W_s(f) = I_{\mu_p}(f)\, \mu_{s-1}/s$ for $1 \le s \le n$, and
+\begin{equation}\label{eq:A1}
+\frac{H^{\mathrm{nz}}_{\mu_p}(f)}{I_{\mu_p}(f)} = \frac{1}{\ln 2}\sum_{m=0}^N \frac{\mu_m}{m+1}\ln \frac{\binom{N}{m}}{\peff\, \mu_m}
+= \log_2 \frac{1}{pq} + \frac{1}{\ln 2}\sum_{m=0}^N \frac{\mu_m}{m+1} \ln \frac{\binom{N}{m}(pq)^m}{4\pi_p(\J)\,\mu_m}.
+\end{equation}
+\item For every $u \in [0,1]$, with $F(u) := \sum_m u^m \mu_m$,
+\begin{equation}\label{eq:A2}
+F(u) \le \frac{2}{\pi}\int_0^{\pi/2} \bigl(1 - 4pq(1-u)\sin^2\chi\bigr)^{N/2} d\chi \le e^{-M(1-u)} I_0\bigl(M(1-u)\bigr).
+\end{equation}
+\item $\displaystyle \frac{V_{\mu_p}(f)}{I_{\mu_p}(f)} \le e^{-M}\bigl(I_0(M) + I_1(M)\bigr) < \min\Bigl(1, \sqrt{\tfrac{2}{\pi N pq}}\Bigr)$.
+\item For $\alpha > 0$ let $w_{\alpha M}(m) := \int_0^1 (1-v)^m \frac{1 - e^{-\alpha M v}}{v}\, dv$. Then $w_{\alpha M}(m) > \ln(1 + \frac{\alpha M}{m+1})$ for every integer $m \ge 0$, and
+\[
+\sum_{m=0}^N \mu_m\, w_{\alpha M}(m) < \int_0^\infty e^{-x} I_0(x) \frac{1 - e^{-\alpha x}}{x}\, dx = \ln\bigl(1 + \alpha + \sqrt{\alpha(\alpha+2)}\bigr).
+\]
+\end{enumerate}
+\end{theorem}
+
+\begin{theorem}\label{thm:B}
+For every $p \in (0,1)$, every $n \ge 1$ and every non-constant symmetric Boolean function $f$ on $\{0,1\}^n$,
+\begin{align}
+H_{\mu_p}(f) &< \Bigl(\log_2 \frac{1}{p(1-p)} + 4.25\Bigr) I_{\mu_p}(f), \label{eq:B1}\\
+\Hraw_{\mu_p}(f) &< 5.75\, I_{\mu_p}(f), \qquad H_0(V_{\mu_p}(f)) + \Hraw_{\mu_p}(f) < 6.25\, I_{\mu_p}(f), \label{eq:B2}\\
+B^+_{\mu_p}(f) &< 5.75\, I_{\mu_p}(f), \qquad B_{\mu_p}(f) < 6.25\, I_{\mu_p}(f). \label{eq:B3}
+\end{align}
+\end{theorem}
+
+
+\section{Proof of Theorem~\ref{thm:A}}\label{sec:A}
+
+We use one combinatorial fact. A finite sequence $b_1, \dots, b_L \ge 0$ is unimodal if it is non-decreasing up to some index and non-increasing after it. A subsequence of a unimodal sequence is unimodal.
+
+\begin{lemma}\label{lem:unimodal}
+Let $b_1, \dots, b_L \ge 0$ be unimodal and let $\varepsilon_j = \delta(-1)^j$ with $\delta \in \{-1, 1\}$. Then $\bigl|\sum_{j=1}^L \varepsilon_j b_j\bigr| \le \max_j b_j$; in particular $\bigl(\sum_j \varepsilon_j b_j\bigr)^2 \le \sum_j b_j^2$.
+\end{lemma}
+
+\begin{proof}
+Write $b_j = \int_0^\infty \mathbf{1}[b_j > t]\, dt$, where $\mathbf{1}[\cdot]$ is the indicator of the event in brackets. For each $t$ the set $\{j : b_j > t\}$ is a set of consecutive indices, by unimodality, and an alternating sum of $\pm 1$ over consecutive indices lies in $\{-1, 0, 1\}$. It is empty for $t \ge \max_j b_j$. Hence $|\sum_j \varepsilon_j b_j| \le \int_0^{\max b} 1\, dt$. This is the argument of~\cite[Lemma~3.1]{Shm26sym}, applied to the sequence $(b_j)$ itself.
+\end{proof}
+
+Throughout, $n \ge 2$, $f(x) = g(|x|)$ is non-constant, and $\J = \{r_1 < \dots < r_L\}$ with $L \ge 1$. Write $x = (x_1, x')$ with $x' \in \{0,1\}^N$ and $Q_r(x') := \mathbf{1}[|x'| = r-1]$. Since $g$ takes values $\pm 1$, $g(r) - g(r-1) = 2\varepsilon_r$ for $r \in \J$, where $\varepsilon_{r_j} = \delta(-1)^j$ alternate in sign. Thus
+\begin{equation}\label{eq:D1}
+D_1 f = 2\sqrt{pq} \sum_{r \in \J} \varepsilon_r Q_r .
+\end{equation}
+
+\subsection{Part 1}
+For $S \ni 1$ write $S = \{1\} \cup S'$. Averaging over $x_1$ first, $\mathbb{E}_{x_1}\bigl[f(x_1, x')\frac{x_1 - p}{\sqrt{pq}}\bigr] = \frac{pq\, f(1,x') - pq\, f(0,x')}{\sqrt{pq}} = D_1 f(x')$, so $\ft(S) = \widehat{D_1 f}(S')$, the coefficient being taken in $L^2(\mu_p)$ on $\{0,1\}^N$. Summing over $S \ni 1$, the influence of the first coordinate is $\sum_{S \ni 1} \ft(S)^2 = \mathbb{E}(D_1 f)^2 = 4pq \sum_{r \in \J} \pi_p(r-1) = \peff$, the $Q_r$ being disjoint. Since $\sum_S |S| \ft(S)^2 = \sum_i \sum_{S \ni i} \ft(S)^2$ and $f$ is symmetric, $I_{\mu_p}(f) = n \peff$.
+
+Since $f$ is symmetric, $\ft(S) = \ft(\tau S)$ for every permutation $\tau$ of $[n]$. Hence $\sum_{|S| = s,\, S \ni 1} \ft(S)^2 = \frac{s}{n} W_s(f)$, while the left side equals $W_{s-1}(D_1 f) = \peff \mu_{s-1}$. So $W_s(f) = \frac{n}{s}\peff\mu_{s-1} = I_{\mu_p}(f)\mu_{s-1}/s$, and $\sum_m \mu_m = \mathbb{E}(D_1 f)^2/\peff = 1$ by Parseval. All $\binom{n}{s}$ coefficients of level $s$ are equal, so, using $s\binom{n}{s} = n\binom{N}{s-1}$,
+\[
+\ft(S)^2 = \frac{W_s(f)}{\binom{n}{s}} = \frac{\peff\, \mu_{s-1}}{\binom{N}{s-1}} \qquad (|S| = s \ge 1).
+\]
+Therefore $H^{\mathrm{nz}}_{\mu_p}(f) = \sum_{s \ge 1} W_s(f) \log_2 \frac{\binom{N}{s-1}}{\peff \mu_{s-1}}$; dividing by $I_{\mu_p}(f)$ and putting $m = s - 1$ gives the first equality in~\eqref{eq:A1}. For the second, $\peff = 4pq\,\pi_p(\J)$ gives
+\[
+\ln \frac{\binom{N}{m}}{\peff\, \mu_m} = (m+1) \ln \frac{1}{pq} + \ln \frac{\binom{N}{m} (pq)^m}{4 \pi_p(\J)\, \mu_m},
+\]
+and the first term contributes $\sum_m \mu_m \ln\frac{1}{pq} = \ln\frac{1}{pq}$.
+
+\begin{remark}[The OR function]\label{rem:or}
+Let $f = \mathrm{OR}_n$, so that $g(0) \ne g(1) = \dots = g(n)$ and $\J = \{1\}$. Then $\pi_p(\J) = q^N$ and $D_1 f = \pm 2\sqrt{pq}\, Q_1$ with $Q_1(x') = \prod_{i}(1 - x'_i)$, whose coefficients are $\widehat{Q_1}(T) = q^N (-\sqrt{p/q})^{|T|}$. Hence $W_m(D_1 f) = 4pq\, q^{2N} \binom{N}{m} (p/q)^m$ and $\mu_m = \binom{N}{m} p^m q^{N-m}$: the derivative-level law of $\mathrm{OR}_n$ is the binomial law $\mathrm{Bin}(N, p)$. Since $\peff \mu_m / \binom{N}{m} = 4 p^{m+1} q^{2N - m + 1}$, the first equality in~\eqref{eq:A1} and the identity $\mathbb{E}\frac{1}{m+1} = \frac{1 - q^n}{np}$ for $m$ with law $\mathrm{Bin}(N, p)$ give the exact value
+\[
+\frac{H^{\mathrm{nz}}_{\mu_p}(\mathrm{OR}_n)}{I_{\mu_p}(\mathrm{OR}_n)} = \log_2 \frac1p + \Bigl(\frac{2(1 - q^n)}{p} - 1\Bigr) \log_2 \frac1q - \frac{2(1 - q^n)}{np}.
+\]
+Moreover $V_{\mu_p}(\mathrm{OR}_n) = 1 - (1 - 2q^n)^2 \le 4q^n$ and $I_{\mu_p}(\mathrm{OR}_n) = 4npq^n$; since $H_0(V) = (1-V)\log_2\frac{1}{1-V} \le V/\ln 2$, this gives $H_0(V)/I_{\mu_p} \le \frac{1}{np \ln 2} \to 0$ as $n \to \infty$. Hence, for fixed $p$,
+\begin{equation}\label{eq:or-limit}
+\lim_{n \to \infty} \frac{H_{\mu_p}(\mathrm{OR}_n)}{I_{\mu_p}(\mathrm{OR}_n)} = \log_2 \frac{1}{pq} + \frac{2q}{p} \log_2 \frac1q ,
+\end{equation}
+and the last term tends to $2/\ln 2$ as $p \to 0$. In particular no bound $H_{\mu_p} \le (C_1 \log_2 \frac{1}{pq} + C_2) I_{\mu_p}$ valid for all $p$ and $n$ can have $C_1 < 1$. In the same limit $\Hraw_{\mu_p}(\mathrm{OR}_n)/I_{\mu_p}(\mathrm{OR}_n) \to 2 + \frac{2q}{p}\log_2\frac1q$, which tends to $2 + 2/\ln 2 = 4.885\dots$ as $p \to 0$.
+\end{remark}
+
+\subsection{Part 2}
+Let $u \in [0,1]$ and $\beta := \sqrt{u}$, and let $T$ denote the noise operator on $L^2(\mu_p)$ over $\{0,1\}^N$. By Part~1, $\peff F(u) = \sum_m u^m W_m(D_1 f) = \langle D_1 f, T_u D_1 f\rangle = \|T_\beta D_1 f\|^2$. By~\eqref{eq:D1}, $T_\beta D_1 f(z) = 2\sqrt{pq}\sum_{r \in \J} \varepsilon_r \nu_\ell(r-1)$, where $\ell = |z|$ and $\nu_\ell(a)$ is the probability that $|x| = a$ when $x$ is obtained from $z$ by the noise of $T_\beta$. Given $|z| = \ell$, $|x|$ is the sum of independent $\mathrm{Bin}(\ell, \beta + (1-\beta)p)$ and $\mathrm{Bin}(N - \ell, (1-\beta)p)$ variables. Binomial laws are log-concave and log-concavity is preserved by convolution, so $a \mapsto \nu_\ell(a)$ is unimodal. Lemma~\ref{lem:unimodal}, applied to the subsequence $(\nu_\ell(r-1))_{r \in \J}$, gives
+\[
+\peff F(u) = 4pq \sum_{\ell=0}^N \pi_p(\ell) \Bigl(\sum_{r \in \J} \varepsilon_r \nu_\ell(r-1)\Bigr)^2 \le 4pq \sum_{r \in \J} \|T_\beta Q_r\|^2 = 4pq \sum_{r \in \J} \pi_p(r-1)\, F_r(u),
+\]
+where $F_r(u) := \langle Q_r, T_u Q_r\rangle / \pi_p(r-1)$ is the probability that $|x| = r-1$ when $|z| = r - 1$ and $x$ is obtained from $z$ by the noise of $T_u$. Since $\peff = 4pq\sum_{r \in \J}\pi_p(r-1)$, it suffices to bound each $F_r(u)$.
+
+Fix $r$ and put $a := r - 1$, $p_{11} := u + (1-u)p$, $p_{10} := 1 - p_{11} = (1-u)q$, $p_{01} := (1-u)p$, $p_{00} := 1 - p_{01}$. Given $|z| = a$, $|x|$ is distributed as the sum of independent $\mathrm{Bin}(a, p_{11})$ and $\mathrm{Bin}(N - a, p_{01})$ variables, so
+\[
+F_r(u) = \frac{1}{2\pi}\int_{-\pi}^{\pi} e^{-ia\theta} \bigl(p_{11}e^{i\theta} + p_{10}\bigr)^{a} \bigl(p_{01}e^{i\theta} + p_{00}\bigr)^{N-a}\, d\theta .
+\]
+For $c + d = 1$ with $c, d \ge 0$ one has $|c e^{i\theta} + d|^2 = 1 - 4cd \sin^2(\theta/2)$. Here $p_{11}p_{10} = (1-u)q(u + (1-u)p) \ge pq(1-u)$ and $p_{01}p_{00} = (1-u)p(u + (1-u)q) \ge pq(1-u)$. Taking absolute values inside the integral, substituting $\chi = \theta/2$ and using $(1 - y)^{N/2} \le e^{-Ny/2}$,
+\begin{align*}
+F_r(u) &\le \frac{2}{\pi}\int_0^{\pi/2} \bigl(1 - 4pq(1-u)\sin^2\chi\bigr)^{N/2} d\chi\\
+&\le \frac{2}{\pi}\int_0^{\pi/2} e^{-2M(1-u)\sin^2\chi}\, d\chi = e^{-M(1-u)} I_0\bigl(M(1-u)\bigr),
+\end{align*}
+the last step by $\frac{2}{\pi}\int_0^{\pi/2} e^{-2X\sin^2\chi}\,d\chi = e^{-X}\frac{1}{\pi}\int_0^\pi e^{X\cos\psi}\, d\psi = e^{-X} I_0(X)$. This proves~\eqref{eq:A2}.
+
+\subsection{Part 3}
+By Part~1, $V_{\mu_p}(f) = \sum_{s \ge 1} W_s(f) = I_{\mu_p}(f)\sum_m \frac{\mu_m}{m+1}$, so $V_{\mu_p}(f)/I_{\mu_p}(f) = \int_0^1 F(u)\, du$. By~\eqref{eq:A2} and the substitution $x = M(1-u)$,
+\[
+\frac{V_{\mu_p}(f)}{I_{\mu_p}(f)} \le \frac{1}{M}\int_0^M e^{-x} I_0(x)\, dx = e^{-M}\bigl(I_0(M) + I_1(M)\bigr),
+\]
+because $I_0' = I_1$ and $I_1'(x) = I_0(x) - I_1(x)/x$ give $\frac{d}{dx}\bigl[x e^{-x}(I_0(x) + I_1(x))\bigr] = e^{-x} I_0(x)$. Since $e^{-x}I_0(x) = \frac1\pi\int_0^\pi e^{-x(1 - \cos\psi)}\, d\psi < 1$ for $x > 0$, the middle term is less than $1$. Next let $G(X) := \sqrt{X}\, e^{-X}(I_0(X) + I_1(X))$ for $X > 0$. The same identities give
+\[
+G'(X) = \frac{e^{-X}\bigl(I_0(X) - I_1(X)\bigr)}{2\sqrt{X}}, \qquad I_0(X) - I_1(X) = \frac1\pi\int_0^\pi e^{X\cos\psi}(1 - \cos\psi)\, d\psi > 0,
+\]
+so $G$ is strictly increasing, and $I_\nu(X)\sqrt{2\pi X}\,e^{-X} \to 1$ as $X \to \infty$ gives $G(X) \to \sqrt{2/\pi}$. Hence $e^{-M}(I_0(M) + I_1(M)) < \sqrt{2/(\pi M)} = \sqrt{2/(\pi N pq)}$.
+
+\subsection{Part 4}
+Fix $m \ge 0$ and put $X := \alpha M > 0$ and $\kappa_m(X) := \partial_X w_X(m) = \int_0^1 (1-v)^m e^{-Xv}\, dv$. Integrating $\frac{d}{dv}\bigl[(1-v)^{m+1} e^{-Xv}\bigr]$ over $[0,1]$ and writing $(1-v)^{m+1} = (1-v)^m - v(1-v)^m$ gives
+\[
+(m + 1 + X)\, \kappa_m(X) = 1 + X\int_0^1 v(1-v)^m e^{-Xv}\, dv > 1 .
+\]
+So $\partial_X w_X(m) > \frac{1}{m+1+X} = \partial_X \ln\bigl(1 + \frac{X}{m+1}\bigr)$ for $X > 0$. Both functions vanish at $X = 0$, and integrating gives $w_{\alpha M}(m) > \ln(1 + \frac{\alpha M}{m+1})$.
+
+For the sum, Tonelli's theorem (all terms are non-negative), the substitution $v = 1 - u$ and~\eqref{eq:A2} give
+\begin{align*}
+\sum_{m=0}^N \mu_m w_{\alpha M}(m) &= \int_0^1 F(1 - v)\, \frac{1 - e^{-\alpha M v}}{v}\, dv\\
+&\le \int_0^M e^{-x} I_0(x)\frac{1 - e^{-\alpha x}}{x}\, dx < \int_0^\infty e^{-x} I_0(x)\frac{1 - e^{-\alpha x}}{x}\, dx .
+\end{align*}
+Insert $e^{-x}I_0(x) = \frac2\pi\int_0^{\pi/2} e^{-2x\sin^2\chi}\, d\chi$. The integrand $\bigl(e^{-2x\sin^2\chi} - e^{-(2\sin^2\chi + \alpha)x}\bigr)/x$ is non-negative, so the order of integration may be exchanged, and Frullani's integral $\int_0^\infty \frac{e^{-ax} - e^{-bx}}{x}\, dx = \ln\frac{b}{a}$ ($0 < a < b$) gives
+\[
+\int_0^\infty e^{-x} I_0(x)\frac{1 - e^{-\alpha x}}{x}\, dx = \frac{2}{\pi}\int_0^{\pi/2} \Bigl[\ln\frac{\alpha}{2} + \ln\Bigl(1 + \frac{2}{\alpha}\sin^2\chi\Bigr) - 2\ln\sin\chi\Bigr] d\chi .
+\]
+With $\frac2\pi\int_0^{\pi/2}\ln(1 + c\sin^2\chi)\, d\chi = 2\ln\frac{1 + \sqrt{1+c}}{2}$ for $c > 0$ and $\frac2\pi\int_0^{\pi/2}\ln\sin\chi\, d\chi = -\ln 2$, the right side equals $\ln\bigl(\frac{\alpha}{2}(1 + \sqrt{1 + 2/\alpha})^2\bigr) = \ln\bigl(1 + \alpha + \sqrt{\alpha(\alpha+2)}\bigr)$. \qed
+
+\section{Proof of Theorem~\ref{thm:B}}\label{sec:B}
+
+\subsection{Reductions}\label{ssec:red}
+The map $x \mapsto \bar x := (1 - x_1, \dots, 1 - x_n)$ carries $\mu_p$ to $\mu_q$ and symmetric functions to symmetric functions, and $\phi_S^{(p)}(\bar x) = (-1)^{|S|}\phi_S^{(q)}(x)$. Hence every squared coefficient, and with them $H$, $V$, $I$, $\up$, $B^+$, $B$, $\Hraw$ and $\log_2\frac{1}{pq}$, is unchanged when $(f, p)$ is replaced by $(\bar f, q)$, where $\bar f(x) := f(\bar x)$. We assume $p \le \frac12$ from now on.
+
+For $n = 1$ a non-constant $f$ is $\pm(2x_1 - 1)$. Then $\ft(\emptyset) = \pm(p - q)$ and $\ft(\{1\})^2 = 4pq$, so $I = V = 4pq$, $H^{\mathrm{nz}} = 4pq\log_2\frac{1}{4pq}$, $\Hraw = B^+ = 0$ and
+\[
+\frac{H_{\mu_p}(f)}{I_{\mu_p}(f)} = \log_2\frac{1}{4pq} + \frac{1 - 4pq}{4pq}\log_2\frac{1}{1 - 4pq}.
+\]
+By \eqref{eq:H0} the second term is at most $1/\ln 2$, and $B_{\mu_p}(f) = H_0(4pq) \le 4pq/\ln 2$; all of \eqref{eq:B1}--\eqref{eq:B3} hold with room. From now on $n \ge 2$, $N = n - 1$, $M = Npq$, and $v := V_{\mu_p}(f)/I_{\mu_p}(f)$. By Theorem~\ref{thm:A}(3), $v \le v_{\mathrm B}(M) := e^{-M}(I_0(M) + I_1(M)) < \min(1, \sqrt{2/(\pi M)})$.
+
+\subsection{Four lemmas}\label{ssec:lemmas}
+
+\begin{lemma}\label{lem:tilt}
+Let $n \ge 2$ and $f$ be non-constant and symmetric. Then $nv \ge 1$, and for every $\lambda \in (0,1)$
+\[
+\frac{H^{\mathrm{nz}}_{\mu_p}(f)}{I_{\mu_p}(f)} \le (1 - v)\log_2\frac1\lambda + (nv - 1)\log_2\frac{1}{1-\lambda} + v\log_2\frac{1}{n\lambda v\,\peff}.
+\]
+\end{lemma}
+
+\begin{proof}
+$V = \sum_{S \ne \emptyset}\ft(S)^2 \ge \sum_{S \ni 1}\ft(S)^2 = \peff = I/n$, so $nv \ge 1$. By Theorem~\ref{thm:A}(1), $\sum_{s \ge 1} W_s = I\sum_m \frac{\mu_m}{m+1}$, so
+\[
+\sum_m \frac{\mu_m}{m+1} = v, \qquad \sum_m \frac{m\,\mu_m}{m+1} = 1 - v, \qquad \sum_m \frac{(N - m)\mu_m}{m+1} = \sum_m \Bigl(\frac{n}{m+1} - 1\Bigr)\mu_m = nv - 1.
+\]
+Put $P_m := \binom{N}{m}\lambda^m(1-\lambda)^{N-m}$, so that $\binom{N}{m} = \lambda^{-m}(1-\lambda)^{-(N-m)}P_m$. The first equality in \eqref{eq:A1} becomes
+\[
+\frac{H^{\mathrm{nz}}_{\mu_p}}{I_{\mu_p}} = (1 - v)\log_2\frac1\lambda + (nv - 1)\log_2\frac{1}{1-\lambda} + v\log_2\frac{1}{\peff} + \frac{1}{\ln 2}\sum_m \frac{\mu_m}{m+1}\ln\frac{P_m}{\mu_m}.
+\]
+The weights $\mu_m/((m+1)v)$ sum to $1$, so by Jensen's inequality the last sum is at most $v\ln\bigl(\frac1v\sum_m \frac{P_m}{m+1}\bigr)$, and $\sum_{m=0}^N \frac{P_m}{m+1} = \frac{1 - (1-\lambda)^n}{n\lambda} < \frac{1}{n\lambda}$.
+\end{proof}
+
+\begin{lemma}\label{lem:opt}
+Let $n \ge 2$ and $f$ be non-constant and symmetric, and suppose $v \le v_{\mathrm{ub}} \le 1$ and $\peff \ge p_{\mathrm{lb}} > 0$. Put $v_* := \min(v_{\mathrm{ub}}, \frac{1}{n p_{\mathrm{lb}}})$. Then $nv_* \ge 1$ and
+\[
+\begin{gathered}
+\frac{H^{\mathrm{nz}}_{\mu_p}(f)}{I_{\mu_p}(f)} < \frac{1}{\ln 2} + (1 - v_*)\log_2(nv_*) + v_*\log_2\frac{1}{p_{\mathrm{lb}}},\\
+\frac{H_{\mu_p}(f)}{I_{\mu_p}(f)} < \frac{1 + v_*}{\ln 2} + (1 - v_*)\log_2(nv_*) + v_*\log_2\frac{1}{p_{\mathrm{lb}}}.
+\end{gathered}
+\]
+\end{lemma}
+
+\begin{proof}
+Since $V \le 1$, $v = V/(n\peff) \le 1/(n p_{\mathrm{lb}})$, so $1/n \le v \le v_*$. For $\xi \in [1/n, v_*]$ let
+\[
+\Psi(\xi) := \log_2(n\xi) + (n\xi - 1)\log_2\frac{n\xi}{n\xi - 1} + \xi\log_2\frac{1}{n\xi\,p_{\mathrm{lb}}},
+\]
+the middle term read as $0$ at $n\xi = 1$. Lemma~\ref{lem:tilt} with $\lambda = 1/(nv)$ (with $\lambda \to 1$ if $nv = 1$) and $\peff \ge p_{\mathrm{lb}}$ give $H^{\mathrm{nz}}/I \le \Psi(v)$. For $1/n < \xi \le v_*$,
+\[
+(\ln 2)\,\Psi'(\xi) = n\ln\frac{n\xi}{n\xi - 1} - 1 + \ln\frac{1}{n\xi\,p_{\mathrm{lb}}} > \frac1\xi - 1 \ge 0,
+\]
+using $\ln(1 + t) > t/(1+t)$ at $t = 1/(n\xi - 1)$, $\xi \le 1$ and $n\xi\,p_{\mathrm{lb}} \le 1$. Hence $\Psi(v) \le \Psi(v_*)$, and $(y - 1)\ln\frac{y}{y-1} < 1$ for $y > 1$ gives the first bound. The second follows from \eqref{eq:H0}, which gives $H_0(V)/I \le v/\ln 2 \le v_*/\ln 2$.
+\end{proof}
+
+\begin{lemma}\label{lem:dich}
+Let $p \le \frac12$, $n \ge 2$, $k_0 := \lfloor np \rfloor \in \{0, \dots, N\}$, and let $f$ be non-constant and symmetric. There is $k \in \{0, \dots, N\}$ with $k + 1 \in \J$, hence $\pi_p(\J) \ge \pi_p(k)$, such that either $k = k_0$, or $k \ne k_0$ and $v \le 1/d(k)$, where $d(k) := np - k \ge 1$ if $k < k_0$ and $d(k) := k + 1 - np > 1$ if $k > k_0$.
+\end{lemma}
+
+\begin{proof}
+If $k_0 + 1 \in \J$ take $k = k_0$. Otherwise let $r_- := \max(\J \cap \{1, \dots, k_0\})$ and $r_+ := \min(\J \cap \{k_0 + 2, \dots, n\})$; at least one exists, and $g$ is constant on $\{r_-, \dots, r_+ - 1\}$ (reading a missing $r_-$ as $0$ and a missing $r_+$ as $n+1$). The value of $f$ that $g$ does not take on this plateau is therefore taken only on $\{|x| \le r_- - 1\} \cup \{|x| \ge r_+\}$; let $a$ be its $\mu_p$-mass. Write $\tau_-(r) := \mu_p(|x| \le r - 1)$ and $\tau_+(r) := \mu_p(|x| \ge r)$, with a missing side contributing $0$. Then $V = 1 - (1 - 2a)^2 = 4a(1-a) \le 4a \le 4(\tau_-(r_-) + \tau_+(r_+))$, while $I = 4pqn\,\pi_p(\J) \ge 4pqn(\pi_p(r_- - 1) + \pi_p(r_+ - 1))$ over the sides present. So
+\[
+v \le \max\Bigl\{\frac{\tau_-(r_-)}{pqn\,\pi_p(r_- - 1)},\ \frac{\tau_+(r_+)}{pqn\,\pi_p(r_+ - 1)}\Bigr\},
+\]
+the maximum over the sides present, and we let $k := r - 1$ for a maximising $r$.
+
+If $r = r_-$, then $k < k_0 \le np$. In $\tau_-(k+1) = \sum_{j=0}^{k}\binom{n}{j}p^jq^{n-j}$ the ratio of the $(j-1)$-st term to the $j$-th is $\frac{jq}{(n-j+1)p} \le \frac{kq}{(n-k)p} < 1$, and $\binom{n}{k}p^kq^{n-k} = \frac{pqn}{(n-k)p}\pi_p(k)$. Summing the geometric series,
+\[
+\frac{\tau_-(k+1)}{pqn\,\pi_p(k)} \le \frac{1}{(n-k)p}\cdot\frac{(n-k)p}{(n-k)p - kq} = \frac{1}{np - k}.
+\]
+If $r = r_+$, then $r \ge k_0 + 2 > np + 1$; in $\tau_+(r)$ the ratio of the $(j+1)$-st term to the $j$-th is $\frac{(n-j)p}{(j+1)q} < \frac{(n-r)p}{rq} < 1$ and $\binom{n}{r}p^rq^{n-r} = \frac{pqn}{rq}\pi_p(k)$, which gives $\tau_+(r)/(pqn\,\pi_p(k)) \le 1/(rq - (n-r)p) = 1/(k + 1 - np)$.
+\end{proof}
+
+For $\alpha > 0$ put $b_\alpha := 1 - \ln\alpha$, $C_{\mathrm{int}}(\alpha) := \ln\bigl(1 + \alpha + \sqrt{\alpha(\alpha+2)}\bigr) + b_\alpha$, and for $M > 0$
+\begin{equation}\label{eq:Qpoi}
+Q(M;\alpha) := \sum_{m=0}^\infty \frac{M^m}{(m+1)!}\Bigl(\frac{m+1}{m+1+\alpha M}\Bigr)^{m+1}e^{-(m+1)b_\alpha}.
+\end{equation}
+
+\begin{lemma}\label{lem:poi}
+Let $n \ge 2$, $f$ non-constant and symmetric, and $\alpha > 0$. Then
+\begin{equation}\label{eq:gibbs}
+\frac{H^{\mathrm{nz}}_{\mu_p}(f)}{I_{\mu_p}(f)} \le \log_2\frac{1}{pq} + \frac{1}{\ln 2}\Bigl[C_{\mathrm{int}}(\alpha) + v\ln\frac{Q(M;\alpha)}{4v\,\pi_p(\J)}\Bigr].
+\end{equation}
+Moreover $Q(M;\alpha) \le \frac{e^{\alpha M/e} - 1}{M(1 + \alpha M)}$ for all $M > 0$, and $Q(M;\alpha) < \frac{3\sqrt\pi}{8}2^{1/4}\alpha^{1/4}M^{-3/4}$ for $M \ge \frac{1}{2\alpha}$.
+\end{lemma}
+
+\begin{proof}
+Let $\omega(m) := w_{\alpha M}(m) + b_\alpha$ and $c_m := \binom{N}{m}(pq)^m e^{-(m+1)\omega(m)}$. The second equality in \eqref{eq:A1} reads
+\[
+\frac{H^{\mathrm{nz}}_{\mu_p}}{I_{\mu_p}} = \log_2\frac{1}{pq} + \frac{1}{\ln 2}\Bigl[\sum_m \mu_m\,\omega(m) + \sum_m \frac{\mu_m}{m+1}\ln\frac{c_m}{\mu_m} - v\ln\bigl(4\pi_p(\J)\bigr)\Bigr].
+\]
+By Theorem~\ref{thm:A}(4), $\sum_m \mu_m\omega(m) < C_{\mathrm{int}}(\alpha)$. Jensen's inequality, as in Lemma~\ref{lem:tilt}, bounds the middle sum by $v\ln\bigl(\frac1v\sum_m \frac{c_m}{m+1}\bigr)$. Since $\binom{N}{m}(pq)^m \le M^m/m!$ and, by Theorem~\ref{thm:A}(4), $e^{-(m+1)w_{\alpha M}(m)} < \bigl(\frac{m+1}{m+1+\alpha M}\bigr)^{m+1}$, we get $\sum_m \frac{c_m}{m+1} < Q(M;\alpha)$, which proves \eqref{eq:gibbs}.
+
+For the bounds on $Q$ put $j := m + 1$ and $X := \alpha M$. Since $e^{-jb_\alpha} = (\alpha/e)^j$ and $(1 + X/j)^j \ge 1 + X$,
+\[
+Q(M;\alpha) \le \frac{1}{1+X}\sum_{j \ge 1}\frac{M^{j-1}}{j!}\Bigl(\frac{\alpha}{e}\Bigr)^j = \frac{e^{X/e} - 1}{M(1+X)}.
+\]
+For the second bound, $j! > \sqrt{2\pi j}\,(j/e)^j$ gives $Q(M;\alpha) < \frac{1}{M\sqrt{2\pi}}\sum_{j \ge 1} j^{-1/2}(1 + j/X)^{-j}$. For $j \ge 2$ the binomial expansion gives $(1 + j/X)^j \ge 1 + \frac{j^2}{X} + \frac{j^3(j-1)}{2X^2} \ge (1 + \frac{j^2}{2X})^2$; as $y \mapsto y^{-1/2}(1 + y^2/(2X))^{-2}$ is decreasing, the terms $j \ge 2$ sum to at most $\int_1^\infty y^{-1/2}(1 + y^2/(2X))^{-2}dy$. For $j = 1$ and $X \ge \frac12$, $2(1 + 1/X) - (1 + 1/(2X))^2 = 1 + 1/X - 1/(4X^2) > 0$, so $(1 + 1/X)^{-1} < 2(1 + 1/(2X))^{-2} \le \int_0^1 y^{-1/2}(1 + y^2/(2X))^{-2}dy$. Substituting $y = \sqrt{2X}\,t^2$,
+\[
+Q(M;\alpha) < \frac{1}{M\sqrt{2\pi}}\int_0^\infty \frac{dy}{\sqrt y\,(1 + y^2/(2X))^2} = \frac{2(2X)^{1/4}}{M\sqrt{2\pi}}\int_0^\infty\frac{dt}{(1+t^4)^2} = \frac{2(2X)^{1/4}}{M\sqrt{2\pi}}\cdot\frac{3\pi}{8\sqrt2},
+\]
+since the substitution $u = t^4$ and Euler's Beta and Gamma functions give $\int_0^\infty\frac{dt}{(1+t^4)^2} = \frac14\mathrm{B}(\tfrac14, \tfrac74) = \frac{3}{16}\Gamma(\tfrac14)\Gamma(\tfrac34) = \frac{3\pi}{8\sqrt2}$. This is the stated bound.
+\end{proof}
+
+\subsection{Three estimates for the binary relative entropy}\label{ssec:est}
+Write $D(\theta\|p) := \theta\log_2\frac{\theta}{p} + (1-\theta)\log_2\frac{1-\theta}{q}$ for $\theta \in [0,1]$. It is convex in $\theta$ and vanishes, with its derivative, at $\theta = p$; hence $D(\theta\|p)/|\theta - p|$ is non-decreasing in $|\theta - p|$ on each side of $p$. Put
+\[
+K_* := 3\log_2 3 - 4 = 0.75488\dots, \qquad C_R := 3\log_2 3 - 2 - \frac{1}{\ln 2} = 1.31219\dots
+\]
+
+\begin{lemma}\label{lem:left}
+Let $p \in (0,\frac12]$ and $\theta \in [0, \frac p2]$. Then
+\[
+F_-(\theta) := \log_2\frac{pq}{p - \theta} + \frac{D(\theta\|p)}{p - \theta} < \frac{1}{\ln 2}, \qquad G_-(\theta) := \frac{q\,D(\theta\|p)}{p - \theta} < \frac{1}{\ln 2}.
+\]
+\end{lemma}
+
+\begin{proof}
+By monotonicity of the secant, $G_-(\theta) \le q\,D(0\|p)/p = \frac{q}{p\ln 2}\ln(1 + \frac pq) < \frac{1}{\ln 2}$. For $F_-$ write $\theta = sp$ with $s \in [0, \frac12]$, $a := q$ and $b := 1 - sp$, so $\frac12 \le a < b \le 1$ and $p - \theta = (1-s)p = b - a$. Since $(\ln 2)D(sp\|p) = sp\ln s + b\ln\frac ba$, dividing by $b - a = (1-s)p$ gives $(\ln 2)F_-(sp) = \ln a - \ln(1-s) + \frac{s\ln s}{1-s} + \frac{b}{b-a}\ln\frac ba$, that is
+\[
+(\ln 2)F_-(sp) = \frac{s\ln s - (1-s)\ln(1-s)}{1 - s} + \Bigl(\ln a + \frac{b}{b-a}\ln\frac ba\Bigr).
+\]
+The function $u(s) := s\ln s - (1-s)\ln(1-s)$ vanishes at $s = 0$ and $s = \frac12$ and has $u''(s) = \frac{1-2s}{s(1-s)} \ge 0$ on $(0,\frac12]$, so $u \le 0$ there. The bracket equals $1 + \frac{1}{b-a}\int_a^b \ln x\,dx < 1$, since $\ln a + \frac{b}{b-a}\ln\frac ba = \frac{b\ln b - a\ln a}{b-a}$.
+\end{proof}
+
+\begin{lemma}\label{lem:right}
+Let $p \in (0,\frac12]$ and $\theta \in [\frac{3p}{2}, 1]$. Then $F_+(\theta) := \log_2\frac{pq}{\theta - p} + \frac{D(\theta\|p)}{\theta - p} < C_R$, and $\frac{p\,D(\theta\|p)}{\theta - p} \le \frac pq\log_2\frac1p \le 1$.
+\end{lemma}
+
+\begin{proof}
+The second claim: by monotonicity of the secant, $D(\theta\|p)/(\theta - p) \le D(1\|p)/(1-p) = \frac1q\log_2\frac1p$, and $\frac{-p\ln p}{1-p}$ is increasing on $(0,1)$, its derivative being $(p - 1 - \ln p)/(1-p)^2 > 0$, so $\frac pq\log_2\frac1p \le 1$ for $p \le \frac12$.
+
+For the first, write $\theta = tp$ with $t \ge \frac32$, $tp \le 1$, and put $\xi := \frac{(t-1)p}{q}$, so that $0 < \xi \le \xi_{\max} := \min(1, t - 1)$. Since $q = \frac{t-1}{t-1+\xi}$ and $\frac{1 - tp}{q} = 1 - \xi$,
+\[
+(\ln 2)F_+(tp) = \zeta(t) + h_t(\xi), \qquad \zeta(t) := \ln\frac{t}{t-1} + \frac{\ln t}{t-1}, \quad h_t(\xi) := \ln\frac{t-1}{t-1+\xi} + \frac{1-\xi}{\xi}\ln(1-\xi).
+\]
+Here $h_t'(\xi) = \sum_{j \ge 2} \frac{\xi^{j-2}}{j} - \frac{1}{t-1+\xi}$ is strictly increasing on $(0,1)$, so $h_t$ is strictly convex and $h_t(\xi) < \max(h_t(0^+), h_t(\xi_{\max}))$ for $0 < \xi < \xi_{\max}$. Three boundary values remain. First, $h_t(0^+) = -1$ and $\zeta'(t) = -\frac{\ln t}{(t-1)^2} < 0$, so $\zeta(t) - 1 \le \zeta(\frac32) - 1 = (\ln 2)C_R$. Second, if $\xi_{\max} = 1$ then $\theta = 1$ and $F_+(1) = \frac pq\log_2\frac1p \le 1 < C_R$. Third, if $\xi_{\max} = t - 1 =: s \in [\frac12, 1]$ then $p = \frac12$, $\theta = \frac{1+s}{2}$, and
+\[
+(\ln 2)F_+\Bigl(\frac{1+s}{2}\Bigr) = \frac{(1+s)\ln(1+s) + (1-s)\ln(1-s)}{s} - \ln(2s) \le (2\ln 2)s - \ln(2s) \le \ln 2,
+\]
+because $\frac{(1+s)\ln(1+s) + (1-s)\ln(1-s)}{s^2} = \sum_{j \ge 1}\frac{2s^{2j-2}}{2j(2j-1)}$ increases to $2\ln 2$ at $s = 1$, and the convex function $(2\ln 2)s - \ln(2s)$ equals $\ln 2$ at $s = \frac12$ and at $s = 1$. In all cases $F_+(\theta) < C_R$; at $\xi = \xi_{\max}$ the value is at most $1$, and for $\xi < \xi_{\max}$ the convexity inequality is strict.
+\end{proof}
+
+\begin{lemma}\label{lem:central}
+Let $p \in (0,\frac12]$ and $\theta \in [\frac p2, \frac{3p}{2}]$. Then $D(\theta\|p) \le K_*|\theta - p|$ and $\theta(1-\theta) \le \frac32 pq$.
+\end{lemma}
+
+\begin{proof}
+By monotonicity of the secant it suffices to take $\theta = \frac p2$ and $\theta = \frac{3p}{2}$. With $y := \frac{p}{2q} \in (0, \frac12]$,
+\[
+\frac{D(\frac p2\|p)}{p/2} = -1 + \frac{(1 + \frac1y)\ln(1+y)}{\ln 2}, \qquad \frac{D(\frac{3p}{2}\|p)}{p/2} = 3\log_2\frac32 + \frac{(\frac1y - 1)\ln(1-y)}{\ln 2},
+\]
+whose derivatives in $y$ are $\frac{y - \ln(1+y)}{y^2\ln 2} > 0$ and $\frac{-y - \ln(1-y)}{y^2\ln 2} > 0$. At $y = \frac12$ both equal $3\log_2 3 - 4$. For the second claim: if $p \le \frac13$ then $\theta \le \frac{3p}{2} \le \frac12$, so $\theta(1-\theta) \le \frac{3p}{2}(1 - \frac{3p}{2}) < \frac32 pq$; if $\frac13 < p \le \frac12$ then $\theta(1-\theta) \le \frac14 < \frac32 pq$.
+\end{proof}
+
+We also use Robbins' form of Stirling's formula~\cite{Rob55}: for $1 \le k \le N - 1$ and $\theta := k/N$,
+\begin{equation}\label{eq:robbins}
+\pi_p(k) > e^{-1/6}\bigl(2\pi N\theta(1-\theta)\bigr)^{-1/2}\, 2^{-N D(\theta\|p)}.
+\end{equation}
+
+\subsection{The five regimes}\label{ssec:regimes}
+Let $n \ge 2$, $p \le \frac12$, and let $k$ be given by Lemma~\ref{lem:dich}; put $\theta := k/N$. Since $\pi_p(\J) \ge \pi_p(k)$ we may take $p_{\mathrm{lb}} := 4pq\,\pi_p(k)$ in Lemma~\ref{lem:opt}. Write
+\[
+E := \frac{H_{\mu_p}(f)}{I_{\mu_p}(f)} - \log_2\frac{1}{pq}, \qquad E^{\mathrm{raw}} := \frac{\Hraw_{\mu_p}(f)}{I_{\mu_p}(f)} = \frac{H^{\mathrm{nz}}_{\mu_p}(f)}{I_{\mu_p}(f)} - \log_2\frac{1}{pq} + 2 .
+\]
+For every admissible $v_{\mathrm{ub}}$, with $\sigma := v_*$, Lemma~\ref{lem:opt} gives
+\begin{equation}\label{eq:master}
+\begin{split}
+E &< \frac{1 + \sigma}{\ln 2} - 2\sigma + (1 - \sigma)\log_2(n\sigma\,pq) + \sigma\log_2\frac{1}{\pi_p(k)},\\
+E^{\mathrm{raw}} &< \frac{1}{\ln 2} + 2 - 2\sigma + (1 - \sigma)\log_2(n\sigma\,pq) + \sigma\log_2\frac{1}{\pi_p(k)},
+\end{split}
+\end{equation}
+and $\sigma \le v_{\mathrm{ub}}$. Indeed $\sigma\log_2\frac{1}{4pq\,\pi_p(k)} - \log_2\frac{1}{pq} = -2\sigma + \sigma\log_2\frac{1}{\pi_p(k)} - (1-\sigma)\log_2\frac{1}{pq}$.
+
+\emph{Regime 1: $k = 0$.} If $k_0 = 0$ then $np < 1$ and $v \le 1$; otherwise $v \le 1/d(0) = 1/(np) \le 1$. Take $v_{\mathrm{ub}} := \min(1, \frac{1}{np})$; then $n\sigma \le \frac1p$ and $\pi_p(0) = q^N$, and \eqref{eq:master} gives
+\[
+\begin{gathered}
+E < \frac{1 + \sigma}{\ln 2} - 2\sigma - (1-\sigma)\log_2\frac1q + \sigma N\log_2\frac1q < \frac{1}{\ln 2} + 2,\\
+E^{\mathrm{raw}} < \frac{1}{\ln 2} + 2(1 - \sigma) + \sigma N\log_2\frac1q < \frac{1}{\ln 2} + 4,
+\end{gathered}
+\]
+because $\sigma N\log_2\frac1q < \frac1p\log_2\frac1q \le 2$ for $p \le \frac12$ (the middle function increases in $p$) and $\frac{1}{\ln 2} < 2$.
+
+\emph{Regime 2: $k = N$.} If $k \ne k_0$ then $d(N) = nq$; if $k = k_0 = N$ then $p = \frac12$, $n = 2$ and again $v \le 1 = \frac{1}{nq}$. Take $v_{\mathrm{ub}} := \frac{1}{nq}$; since $4p^n \le 1$ we have $\sigma = \frac{1}{nq}$, $n\sigma = \frac1q$, and $\pi_p(N) = p^N$. As $n\sigma - 1 = \frac pq$, \eqref{eq:master} and Lemma~\ref{lem:right} give
+\[
+E < \frac{1 + \sigma}{\ln 2} - 2\sigma + \frac pq\log_2\frac1p \le \frac{1}{\ln 2} + 1, \qquad E^{\mathrm{raw}} < \frac{1}{\ln 2} + 2 - 2\sigma + \frac pq\log_2\frac1p \le \frac{1}{\ln 2} + 3.
+\]
+
+\emph{Separation.} If $1 \le k \le \frac{Np}{2}$ then $k \ne k_0$: otherwise $\frac{Np}{2} \ge k_0 > np - 1$ would give $\frac{Np}{2} < 1 - p < 1 \le k_0$. Since also $k \le \frac{Np}{2} < np < k_0 + 1$, we get $k < k_0$, and $d(k) = N(p - \theta) + p$. If $\frac{3Np}{2} < k \le N - 1$ then $N \ge 2$, so $k_0 \le np \le \frac{3Np}{2} < k$ and $d(k) = N(\theta - p) + q$. In both cases we take $v_{\mathrm{ub}} := 1/d(k)$.
+
+\emph{Regime 3: $1 \le k \le \frac{Np}{2}$.} For every $\sigma \le 1/d(k)$: $n\sigma(p - \theta) \le \sigma(np - k) = \sigma\,d(k) \le 1$ gives $n\sigma\,pq \le \frac{pq}{p-\theta}$; $N\sigma = \frac{\sigma d(k) - p\sigma}{p - \theta} \le \frac{(1-\sigma) + q\sigma}{p - \theta}$; and $N\theta(1-\theta) \le N(p-\theta) < d(k) \le \frac1\sigma$. With \eqref{eq:robbins} and Lemma~\ref{lem:left}, \eqref{eq:master} becomes
+\[
+E < \frac{1 + \frac76 \sigma}{\ln 2} + \frac \sigma2\log_2\frac{\pi}{8\sigma} + (1-\sigma)F_-(\theta) + \sigma G_-(\theta) < \frac{1 + \frac76 \sigma}{\ln 2} + \frac \sigma2\log_2\frac{\pi}{8\sigma} + \frac{1}{\ln 2} =: \Phi_-(\sigma),
+\]
+and likewise $E^{\mathrm{raw}} < \Phi_-^{\mathrm{raw}}(\sigma) := 2 + \frac{1 + \frac16 \sigma}{\ln 2} + \frac \sigma2\log_2\frac{\pi}{8\sigma} + \frac{1}{\ln 2}$. Both are strictly concave on $(0,1]$. $\Phi_-'(1) = \frac{2}{3\ln 2} + \frac12\log_2\frac\pi8 > 0$, so $\Phi_-(\sigma) \le \Phi_-(1) = \frac{19}{6\ln 2} + \frac12\log_2\frac\pi8$; and $\Phi_-^{\mathrm{raw}}$ is largest at $\sigma = \frac\pi8 e^{-2/3}$, where it equals $2 + \frac{2}{\ln 2} + \frac{\pi e^{-2/3}}{16\ln 2}$.
+
+\emph{Regime 4: $\frac{3Np}{2} < k \le N - 1$.} For every $\sigma \le 1/d(k)$: $n\sigma(\theta - p) \le \sigma(k + 1 - np) = \sigma\,d(k) \le 1$; $N\sigma = \frac{\sigma d(k) - q\sigma}{\theta - p} \le \frac{(1-\sigma) + p\sigma}{\theta - p}$; and $N\theta(1-\theta) < 3N(\theta - p) < 3d(k) \le \frac3\sigma$, as $\theta > \frac{3p}{2}$. With \eqref{eq:robbins} and Lemma~\ref{lem:right},
+\[
+\begin{gathered}
+E < \frac{1 + \frac76 \sigma}{\ln 2} + \frac \sigma2\log_2\frac{3\pi}{8\sigma} + (1-\sigma)C_R + \sigma =: \Phi_+(\sigma),\\
+E^{\mathrm{raw}} < \Phi_+^{\mathrm{raw}}(\sigma) := 2 + \frac{1 + \frac16 \sigma}{\ln 2} + \frac \sigma2\log_2\frac{3\pi}{8\sigma} + (1-\sigma)C_R + \sigma.
+\end{gathered}
+\]
+Both are strictly concave; $\Phi_+'(1) > 0$, so $\Phi_+(\sigma) \le \Phi_+(1) = 1 + \frac{13}{6\ln 2} + \frac12\log_2\frac{3\pi}{8}$, and $\Phi_+^{\mathrm{raw}}$ is largest at $\sigma_+ := \frac{3\pi}{8}\exp\bigl(-\frac23 + 2(1 - C_R)\ln 2\bigr) \in (0,1)$.
+
+\emph{Regime 5: $1 \le k \le N - 1$ and $\frac{Np}{2} < k \le \frac{3Np}{2}$.} Then $Np \ge \frac{2k}{3} \ge \frac23$ and $q \ge \frac12$, so $M \ge \frac13$. If $k = k_0$ then $v \le 1$ and $N|\theta - p| = |k_0 - Np| < 1$; if $k \ne k_0$ then $v \le 1/d(k)$ and $d(k) > N|\theta - p|$. In both cases Lemma~\ref{lem:central} gives $vN\,D(\theta\|p) < K_*$ and $2\pi N\theta(1-\theta) \le 3\pi M$. Inserting $\pi_p(\J) \ge \pi_p(k)$ and \eqref{eq:robbins} into \eqref{eq:gibbs}, and using \eqref{eq:H0} for $H_0$,
+\begin{equation}\label{eq:central}
+\begin{split}
+E &< K_* + \frac{1}{\ln 2}\Bigl[C_{\mathrm{int}}(\alpha) + \Lambda\bigl(C_M(\alpha), v_{\mathrm B}(M)\bigr)\Bigr],\\
+E^{\mathrm{raw}} &< 2 + K_* + \frac{1}{\ln 2}\Bigl[C_{\mathrm{int}}(\alpha) + \Lambda\bigl(C^{\mathrm{raw}}_M(\alpha), v_{\mathrm B}(M)\bigr)\Bigr]
+\end{split}
+\end{equation}
+for every $\alpha > 0$, where $C_M(\alpha) := \frac14 e^{7/6}Q(M;\alpha)\sqrt{3\pi M}$, $C^{\mathrm{raw}}_M(\alpha) := \frac14 e^{1/6}Q(M;\alpha)\sqrt{3\pi M}$, and $\Lambda(C, \bar v) := \sup_{0 < \xi \le \bar v} \xi\ln\frac{C}{\xi}$, which is non-decreasing in $C$ and in $\bar v$. Here $v \le v_{\mathrm B}(M)$ is used, and $v_{\mathrm B}$ is decreasing, since $\frac{d}{dM}e^{-M}(I_0 + I_1)(M) = -e^{-M}I_1(M)/M$. We take $\alpha = \frac72$ and $M_0 = 10$ for $E$, and $\alpha = 4$ and $M_0 = 30$ for $E^{\mathrm{raw}}$.
+
+For $M \ge M_0$ the second bound of Lemma~\ref{lem:poi} and $v_{\mathrm B}(M) < \sqrt{2/(\pi M)}$ give $C_M(\alpha) \le c_0M^{-1/4}$ and $v_{\mathrm B}(M) \le d_0M^{-1/2}$, where
+\[
+c_0 := \frac{3\sqrt3\,\pi}{32}\,2^{1/4}\alpha^{1/4}e^{7/6}, \qquad d_0 := \sqrt{2/\pi},
+\]
+with $e^{1/6}$ in place of $e^{7/6}$ when $C_M(\alpha)$ is replaced by $C^{\mathrm{raw}}_M(\alpha)$. As $\Lambda$ is non-decreasing in both arguments, $\Lambda(C_M(\alpha), v_{\mathrm B}(M)) \le \Lambda(c_0M^{-1/4}, d_0M^{-1/2})$. The ratio $c_0M^{-1/4}/(d_0M^{-1/2}) = \frac{c_0}{d_0}M^{1/4}$ increases with $M$, and it is at least $e$ at $M = M_0$ (Appendix~\ref{app:cert}); so for $M \ge M_0$ the function $\xi \mapsto \xi\ln(c_0M^{-1/4}/\xi)$ is increasing on $(0, d_0M^{-1/2}]$, and
+\[
+\Lambda\bigl(c_0M^{-1/4}, d_0M^{-1/2}\bigr) = d_0M^{-1/2}\Bigl(\ln\frac{c_0}{d_0} + \frac14\ln M\Bigr).
+\]
+The derivative of the right-hand side in $M$ is $d_0M^{-3/2}\bigl(\frac14 - \frac12(\ln\frac{c_0}{d_0} + \frac14\ln M)\bigr)$, which is negative once $\ln\frac{c_0}{d_0} + \frac14\ln M > \frac12$; this holds at $M_0$, hence for all $M \ge M_0$, and the value at $M = M_0$ bounds every larger $M$. On $[\frac13, M_0]$ the right-hand sides of \eqref{eq:central} are bounded by interval arithmetic: on each piece $[M_1, M_2]$, $Q$ is enclosed by its first $400$ terms plus a geometric tail, $\sqrt{3\pi M}$ by its values on $[M_1, M_2]$, and $v_{\mathrm B}$ by its value at $M_1$ (Appendix~\ref{app:cert}).
+
+\subsection{Conclusion of the proof}\label{ssec:concl}
+Collecting the five regimes with the constants of Appendix~\ref{app:cert}, $E < 4.25$ and $E^{\mathrm{raw}} < 5.75$ in every case; this is \eqref{eq:B1} and the first bound of \eqref{eq:B2}. For the second bound of \eqref{eq:B2},
+\[
+H_0(V) + \Hraw_{\mu_p}(f) = H_{\mu_p}(f) - I_{\mu_p}(f)\log_2\frac{1}{4pq} = \Bigl(E + 2\Bigr)I_{\mu_p}(f) < 6.25\,I_{\mu_p}(f).
+\]
+For \eqref{eq:B3}, let $D_i h(x) := \sqrt{pq}\,\bigl(h(x^{i \to 1}) - h(x^{i \to 0})\bigr)$. Since $D_i\phi_T = \phi_{T \setminus \{i\}}$ for $i \in T$ and $D_i\phi_T = 0$ otherwise, $D_S := \prod_{i \in S} D_i$ satisfies $D_S f = \sum_{T \supseteq S}\ft(T)\phi_{T \setminus S}$, so $\up(S) = \mathbb{E}_{\mu_p}[(D_S f)^2]$. Pointwise, $D_S f$ is $(pq)^{|S|/2}$ times an alternating sum of $2^{|S|}$ values of $f$, so $(D_S f)^2 \le (4pq)^{|S|}$. Hence $\up(S) \le (4pq)^{|S|}$, and
+\[
+B^+_{\mu_p}(f) \le \sum_{S \ne \emptyset}\ft(S)^2\log_2\frac{(4pq)^{|S|}}{\ft(S)^2} = H^{\mathrm{nz}}_{\mu_p}(f) - I_{\mu_p}(f)\log_2\frac{1}{4pq} = \Hraw_{\mu_p}(f) < 5.75\,I_{\mu_p}(f),
+\]
+and $B_{\mu_p}(f) = H_0(V) + B^+_{\mu_p}(f) \le H_0(V) + \Hraw_{\mu_p}(f) < 6.25\,I_{\mu_p}(f)$. \qed
+
+\section*{Acknowledgements and funding}
+The research presented in this paper was supported by the European Research Council (ERC) under the European Union's Horizon Europe research and innovation programme (grant agreement No.~101041711), by the Simons Foundation as part of the Collaboration on the Mathematical and Scientific Foundations of Deep Learning, by Heights Labs, by Convex Nexus Capital, by the Israel Science Foundation (grant number 2258/19), and by the Israel Science Foundation (ISF Grant 4101/25).
+
+\section*{Declaration of competing interest}
+The author holds equity in Heights Labs and in Convex Nexus Capital and has a management role at Convex Nexus Capital. These entities are included in the funding declaration above.
+
+\section*{Declaration of generative AI and AI-assisted technologies}
+This paper is part of a broader research project on proving open problems with AI systems. This work was done by AI agents connected to Math Brain~\cite{MathBrainRepo} and working inside the Brain framework~\cite{BrainFramework}, a shared, persistent memory in which the agents record claims, proofs, failed attempts and methods, retrieve one another's results, coordinate who works on what, and audit each other's work.
+
+Claude Opus 5.5 (Anthropic), working through Math Brain, adapted the argument of the symmetric case~\cite{Shm26sym} to the $p$-biased measure, derived Lemmas~\ref{lem:tilt}--\ref{lem:poi} and the case analysis of Sections~\ref{ssec:est} and~\ref{ssec:regimes}, wrote and ran the interval certificates and the numerical checks, and prepared the manuscript. The representation of the Fourier weights through one derivative, the noise-stability bound by a Bessel function and the split of the entropy into level and within-level parts come from~\cite{Shm26sym}, and the bounds in Stirling's formula from~\cite{Rob55}. The author directed the work and is responsible for the content of the paper and for decisions concerning its dissemination.
+
+\section*{Data availability}
+The script \texttt{verify/certify.py} and its output are distributed with this paper. Two further scripts, \texttt{verify/feib\_bf.py} and \texttt{verify/feib\_level.py}, test Theorem~\ref{thm:A}(1) and~(3), Theorem~\ref{thm:B}, Lemmas~\ref{lem:tilt} and~\ref{lem:dich}, the bounds of Lemma~\ref{lem:poi}, \eqref{eq:master} and Remark~\ref{rem:or} numerically: on every non-constant symmetric function with $n \le 8$ for ten values of $p$, and level by level in high-precision arithmetic on selected functions with $n \le 96$ and $p \ge 0.02$, and with $n \le 32$ and $p$ down to $10^{-6}$. They are distributed with their outputs and are not used in the proofs. The outputs are produced by \texttt{python certify.py 400 1200}, \texttt{python feib\_bf.py} and \texttt{python feib\_level.py 10,16,24,32,48,64,96}.
+
+\appendix
+\section{The certified constants}\label{app:cert}
+The script \texttt{verify/certify.py} evaluates every constant used in Section~\ref{sec:B} in interval arithmetic with outward rounding (the \texttt{iv} context of mpmath, 55 decimal digits) and prints an upper bound for each, rounded up to four decimals. Its output is reproduced below. The constants of Regimes 1--4 are closed expressions. For Regime 5, on each piece $[M_1, M_2]$ the function $Q(M;\alpha)$ is enclosed by the sum of its first $400$ terms over the interval $[M_1, M_2]$ plus the geometric tail bound $M^{400}b^{401}/(401!\,(1 - Mb/402))$ with $b = \alpha/e$; $\sqrt{3\pi M}$ is evaluated on $[M_1, M_2]$; $v_{\mathrm B}$ is evaluated at $M_1$, its series being enclosed in the same way; and $\Lambda(C, \bar v)$ is bounded by $C/e$, or by $\bar v\ln(C/\bar v)$ when $C/e \ge \bar v$ is certified. The left end of the first piece is a machine number at most $\frac13$. For $M \ge M_0$ the script checks the two inequalities used in Section~\ref{sec:B}, namely $c_0M_0^{-1/4} \ge e\,d_0M_0^{-1/2}$ and $\ln\frac{c_0}{d_0} + \frac14\ln M_0 > \frac12$, and evaluates the bound at $M_0$.
+
+\medskip
+\begin{center}
+\begin{tabular}{llll}
+\toprule
+regime & quantity & certified bound & required \\
+\midrule
+1: $k = 0$ & $E \le \frac{1}{\ln 2} + 2$ & $3.4427$ & $4.25$ \\
+ & $E^{\mathrm{raw}} \le \frac{1}{\ln 2} + 4$ & $5.4427$ & $5.75$ \\
+2: $k = N$ & $E \le \frac{1}{\ln 2} + 1$ & $2.4427$ & $4.25$ \\
+ & $E^{\mathrm{raw}} \le \frac{1}{\ln 2} + 3$ & $4.4427$ & $5.75$ \\
+3: left & $\Phi_-(1)$ & $3.8943$ & $4.25$ \\
+ & $\max\Phi_-^{\mathrm{raw}} = \Phi_-^{\mathrm{raw}}(\frac\pi8 e^{-2/3})$ & $5.0309$ & $5.75$ \\
+4: right & $\Phi_+(1)$ & $4.2441$ & $4.25$ \\
+ & $\max\Phi_+^{\mathrm{raw}} = \Phi_+^{\mathrm{raw}}(\sigma_+)$ & $5.0380$ & $5.75$ \\
+5: central, $E$ & $M \in [\frac13, 10]$, $400$ pieces & $4.1362$ & $4.25$ \\
+ & $M \ge 10$ & $4.1905$ & $4.25$ \\
+5: central, $E^{\mathrm{raw}}$ & $M \in [\frac13, 30]$, $1200$ pieces & $5.7397$ & $5.75$ \\
+ & $M \ge 30$ & $5.7339$ & $5.75$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+\medskip
+
+The constants $K_*$ and $C_R$ lie in $[0.754887, 0.754888]$ and in $[1.312192, 1.312193]$, respectively. In Regime 5 the largest values on the compact ranges come from pieces near $M = 0.7$ (for $E$, the piece $[0.7925, 0.8167]$; for $E^{\mathrm{raw}}$, the piece $[0.6794, 0.7042]$).
+
+\section{Main symbols}\label{app:notation}
+The main symbols are listed in the order of their definitions; symbols used only inside one proof are defined there.
+
+\begin{center}
+\begin{tabular}{@{}lp{0.6\textwidth}l@{}}
+\toprule
+symbol & meaning & defined in \\
+\midrule
+$\mu_p$, $q$ & the $p$-biased product measure on $\{0,1\}^n$; $q = 1 - p$ & Section~\ref{ssec:notation} \\
+$\phi_S$, $\ft(S)$ & the orthonormal basis of $L^2(\mu_p)$ and the Fourier coefficients of $f$ & Section~\ref{ssec:notation} \\
+$H_{\mu_p}$, $H^{\mathrm{nz}}_{\mu_p}$ & the Fourier entropy and its part over non-empty sets & Section~\ref{ssec:notation} \\
+$W_s$, $V_{\mu_p}$, $I_{\mu_p}$ & the weight of level $s$, the variance, the total influence & Section~\ref{ssec:notation} \\
+$H_0(V)$ & $(1-V)\log_2\frac{1}{1-V}$, the entropy of the empty set & Section~\ref{ssec:notation} \\
+$\Hraw_{\mu_p}$ & $H^{\mathrm{nz}}_{\mu_p} - I_{\mu_p}\log_2\frac{1}{4pq}$ & Section~\ref{ssec:notation} \\
+$\up(S)$, $B^+_{\mu_p}$, $B_{\mu_p}$ & the weight above $S$ and the upward-cancellation functionals & Section~\ref{ssec:notation} \\
+$T_\rho$ & the noise operator on $L^2(\mu_p)$ & Section~\ref{ssec:notation} \\
+$g$, $\J$ & the profile of a symmetric $f$ and its jump set & Section~\ref{ssec:notation} \\
+$N$, $M$, $\pi_p(k)$ & $n - 1$, $Npq$, and the binomial law $\binom{N}{k}p^kq^{N-k}$ & Section~\ref{ssec:notation} \\
+$\pi_p(\J)$, $\peff$ & $\sum_{r \in \J}\pi_p(r-1)$ and $4pq\,\pi_p(\J)$ & Theorem~\ref{thm:A} \\
+$D_1 f$, $\mu_m$ & the derivative in the first coordinate and its normalised level weights & Theorem~\ref{thm:A} \\
+$F(u)$, $w_{\alpha M}(m)$ & $\sum_m u^m\mu_m$ and the weight function of Theorem~\ref{thm:A}(4) & Theorem~\ref{thm:A} \\
+$\bar x$, $\bar f$ & $(1 - x_1, \dots, 1 - x_n)$ and $x \mapsto f(\bar x)$ & Section~\ref{ssec:red} \\
+$v$, $v_{\mathrm B}(M)$ & $V_{\mu_p}/I_{\mu_p}$ and the bound $e^{-M}(I_0(M) + I_1(M))$ for it & Section~\ref{ssec:red} \\
+$b_\alpha$, $C_{\mathrm{int}}(\alpha)$, $Q(M;\alpha)$ & the quantities of the Poisson--Bessel bound & Section~\ref{ssec:lemmas} \\
+$k_0$, $d(k)$ & $\lfloor np \rfloor$ and the distance of a jump from $np$ & Lemma~\ref{lem:dich} \\
+$K_*$, $C_R$ & $3\log_2 3 - 4$ and $3\log_2 3 - 2 - \frac{1}{\ln 2}$ & Section~\ref{ssec:est} \\
+$\theta$, $\sigma$ & $k/N$ and the value $v_*$ of Lemma~\ref{lem:opt} & Section~\ref{ssec:regimes} \\
+$E$, $E^{\mathrm{raw}}$ & $H_{\mu_p}/I_{\mu_p} - \log_2\frac{1}{pq}$ and $\Hraw_{\mu_p}/I_{\mu_p}$ & Section~\ref{ssec:regimes} \\
+$\Phi_\pm$, $\Phi_\pm^{\mathrm{raw}}$ & the bounds for $E$ and $E^{\mathrm{raw}}$ in Regimes 3 and 4 & Section~\ref{ssec:regimes} \\
+$C_M(\alpha)$, $\Lambda$, $c_0$, $d_0$, $M_0$ & the quantities of Regime 5 & Section~\ref{ssec:regimes} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{thebibliography}{99}
+\bibitem{CKLS16} S. Chakraborty, R. Kulkarni, S. V. Lokam, N. Saurabh, Upper bounds on Fourier entropy, Theoret. Comput. Sci. 654 (2016), 92--112.
+\bibitem{FK96} E. Friedgut, G. Kalai, Every monotone graph property has a sharp threshold, Proc. Amer. Math. Soc. 124 (1996), 2993--3002.
+\bibitem{KMS12}
+N.~Keller, E.~Mossel and T.~Schlank,
+\emph{A note on the entropy/influence conjecture},
+Discrete Math. \textbf{312} (2012), no.~22, 3364--3372.
+\href{https://doi.org/10.1016/j.disc.2012.07.031}{doi:10.1016/j.disc.2012.07.031}.
+\bibitem{KKLMS20} E. Kelman, G. Kindler, N. Lifshitz, D. Minzer, M. Safra, Towards a proof of the Fourier-entropy conjecture?, Geom. Funct. Anal. 30 (2020), 1097--1138.
+\bibitem{OT13}
+R.~O'Donnell and L.-Y.~Tan,
+\emph{A composition theorem for the Fourier entropy-influence conjecture},
+in: ICALP 2013, Lecture Notes in Comput. Sci. \textbf{7965}, Springer, Heidelberg, 2013, 780--791.
+\href{https://doi.org/10.1007/978-3-642-39206-1_66}{doi:10.1007/978-3-642-39206-1\_66}.
+\bibitem{OWZ11} R. O'Donnell, J. Wright, Y. Zhou, The Fourier entropy-influence conjecture for certain classes of Boolean functions, ICALP 2011, LNCS 6755, 330--341.
+\bibitem{Shm26lt} Y. Shmalo, Fourier entropy of threshold functions and their compositions, arXiv:2610.16069 (2026).
+\bibitem{Shm26sym} Y. Shmalo, The Fourier entropy-influence inequality for symmetric Boolean functions, Zenodo (2026), \href{https://doi.org/10.5281/zenodo.24068930}{doi:10.5281/zenodo.24068930}.
+\bibitem{MathBrainRepo} Y.~Shmalo, \emph{Math Brain: public snapshot, code and tests}, 2026, \url{https://github.com/yspennstate/math-brain-public}.
+\bibitem{BrainFramework} Y.~Shmalo, \emph{Brain Framework}, public software repository, 2026, \url{https://github.com/yspennstate/brain-framework-public}.
+\bibitem{Rob55} H.~Robbins, A remark on Stirling's formula, Amer. Math. Monthly 62 (1955), 26--29.
+\end{thebibliography}
+\end{document}

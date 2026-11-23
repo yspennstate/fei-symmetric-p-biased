@@ -1,0 +1,17 @@
+n=10 done, profiles so far 9207
+n=16 done, profiles so far 13401
+n=24 done, profiles so far 17667
+n=32 done, profiles so far 22005
+n=48 done, profiles so far 25491
+n=64 done, profiles so far 29089
+n=96 done, profiles so far 32911
+n in [10, 16, 24, 32, 48, 64, 96], p in ['0.02', '0.05', '0.1', '0.2', '0.3', '0.4', '0.5'] (and ['0.001', '0.000001'] for n <= 32): 32911 profiles, 493665 checks passed
+OR_n checked 57 times
+regime counts 1..5: [4318, 62, 1628, 12206, 14697]
+  largest B1          2.67787  at n=96, p=0.1, jumps=[1, 57, 84]
+  largest Hraw        4.52761  at n=96, p=0.1, jumps=[1]
+  largest H0+Hraw     4.67787  at n=96, p=0.1, jumps=[1]
+  largest B+          2.83705  at n=96, p=0.1, jumps=[1, 25, 73]
+  largest B           2.97568  at n=96, p=0.1, jumps=[1, 25, 73]
+  largest B+-Hraw     0.00000  at n=10, p=1e-06, jumps=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+EXIT=0
